@@ -1,0 +1,19 @@
+---
+title: "Malaria Cell Classifier"
+author: "zahera khatoon"
+date: "Spring 2026"
+output: html_document
+---
+
+```{r}
+df <- read.csv("features.csv")
+```
+
+# Summary of Data
+```{r}
+str(df)
+```
+
+```{r}
+summary(df)
+```
