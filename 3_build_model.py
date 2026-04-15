@@ -1,3 +1,5 @@
+from random import Random
+
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import KFold, train_test_split, cross_val_score
@@ -25,3 +27,10 @@ y_pred = svc_model.predict(X_test)
 
 base_accuracy = accuracy_score(y_test, y_pred)
 print(base_accuracy)
+
+
+
+# Random Forest
+rf_model = RandomForestClassifier(n_estimators=100, random_state=123)
+rf_model.fit(X_train, y_train)
+y_pred = rf_model
