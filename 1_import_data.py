@@ -33,7 +33,6 @@ for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected
             break
         image = io.imread(image_path + folder + "/" + filename)
         image = transform.resize(image, (150, 150), anti_aliasing=True)
-        print("image imported")
         # Convert to grayscale
         gray = color.rgb2gray(image)
         # Threshold to isolate cell from background

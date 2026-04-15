@@ -2,5 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
+features.csv
+clean_features.csv
 data/
 features.csv
+clean_features.csv
