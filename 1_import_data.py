@@ -27,28 +27,29 @@ rows = []
 
 for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected")]:
     ind = 0
-    while ind < 5:
-        for filename in os.listdir(image_path + folder):
-            print(filename)
-            image = io.imread(image_path + folder + "/" + filename)
-            print("image imported")
-            # Convert to grayscale
-            gray = color.rgb2gray(image)
-            # Threshold to isolate cell
-            thresh = filters.threshold_otsu(gray)
-            binary = gray > thresh
-            # Measure properties
-            labeled = measure.label(binary)
-            props = measure.regionprops(labeled)[0]
-            rows.append({
-                'source_image': filename,
-                'area': props.area,
-                'perimeter': props.perimeter,
-                'eccentricity': props.eccentricity,
-                'mean_intensity': gray.mean(),
-                'label': label
-            })
-            ind += 1
+    for filename in os.listdir(image_path + folder):
+        if ind > 5:
+            break
+        print(filename)
+        image = io.imread(image_path + folder + "/" + filename)
+        print("image imported")
+        # Convert to grayscale
+        gray = color.rgb2gray(image)
+        # Threshold to isolate cell
+        thresh = filters.threshold_otsu(gray)
+        binary = gray > thresh
+        # Measure properties
+        labeled = measure.label(binary)
+        props = measure.regionprops(labeled)[0]
+        rows.append({
+            'source_image': filename,
+            'area': props.area,
+            'perimeter': props.perimeter,
+            'eccentricity': props.eccentricity,
+            'mean_intensity': gray.mean(),
+            'label': label
+        })
+        ind += 1
 
 df = pd.DataFrame(rows)
 print(df)
