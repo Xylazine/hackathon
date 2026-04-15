@@ -1,0 +1,56 @@
+---
+title: "Malaria Cell Classifier"
+author: "Sheikh, Aamna"
+date: "Spring 2026"
+output: html_document
+---
+
+
+```{r}
+df <- read.csv("clean_features.csv")
+```
+
+# Summary of Data
+```{r}
+str(df)
+```
+```{r}
+summary(df)
+```
+
+# Class Counts
+```{r}
+table(df$label)
+```
+
+# Basic Stats - by class
+```{r}
+df <- read.csv("clean_features.csv")
+```
+
+# Feature Comparision
+# Area
+```{r}
+boxplot(area ~ label, data = df, main = "Area by Class", col = c("lightblue", "lightpink"))
+```
+
+# Perimeter
+```{r}
+boxplot(perimeter ~ label, data = df, main = "Perimeter by Class", col = c("lightblue", "lightpink"))
+```
+
+# Eccentricity
+```{r}
+boxplot(eccentricity ~ label, data = df, main = "Eccentricity by Class", col = c("lightblue", "lightpink"))
+```
+
+# Mean Intensity
+```{r}
+boxplot(mean_intensity ~ label, data = df, main = "Mean Intensity by Class", col = c("lightblue", "lightpink"))
+```
+
+# Correlation Between Features
+```{r}
+numeric_df <- df[, c("area", "perimeter", "eccentricity", "mean_intensity")]
+cor(numeric_df)
+```
