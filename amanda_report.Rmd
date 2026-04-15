@@ -6,15 +6,76 @@ output: html_document
 ---
 
 
-```{r}
-df <- read.csv("features.csv")
+```{r, echo=F}
+df <- read.csv("clean_features.csv")
 ```
 
 # Summary of Data
-```{r}
-str(df)
-```
-```{r}
+
+```{r, echo=F}
 summary(df)
 ```
+
+
+## Exploratory Visualization
+
+```{r, echo=F}
+ggplot(df, aes(x=perimeter, y="", fill=label)) + 
+  geom_boxplot() +
+  theme_minimal() +
+  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
+  labs(title="Difference in Cell Perimeter by Disease State", fill="Label", x="Perimeter", y="") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+  )
+```
+
+```{r, echo=F}
+ggplot(df, aes(x=area, y="", fill=label)) + 
+  geom_boxplot() +
+  theme_minimal() +
+  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
+  labs(title="Difference in Cell Area by Disease State", fill="Label", x="Area", y="") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+  )
+```
+
+```{r, echo=F}
+ggplot(df, aes(x=eccentricity, y="", fill=label)) + 
+  geom_boxplot() +
+  theme_minimal() +
+  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
+  labs(title="Difference in Cell Eccentricity by Disease State", fill="Label", x="Eccentricity", y="") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+  )
+```
+
+```{r, echo=F}
+ggplot(df, aes(x=mean_intensity, y="", fill=label)) + 
+  geom_boxplot() +
+  theme_minimal() +
+  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
+  labs(title="Difference in Cell Intensity by Disease State", fill="Label", x="Mean Intensity", y="") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+  )
+```
+
+## Data Shaping
+
+- before feature extraction, images were resized, converted to greyscale, and separated from background
+- after feature extraction, extreme outliers were removed, data was scaled with the scalar fit to the training data to prevent leakage
+
+
+## Model Parameters
+
+### Random Forest
+
+### SVM
+
+
+
+
 
