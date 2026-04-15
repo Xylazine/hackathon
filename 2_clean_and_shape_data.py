@@ -2,7 +2,7 @@ from scipy import stats
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv('features.csv')
+df = pd.read_csv('cell_segmentation_classifier/features.csv')
 
 # find numeric columns
 n_rows = df.index  # row length
