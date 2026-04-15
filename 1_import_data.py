@@ -1,5 +1,4 @@
 import kagglehub
-import numpy as np
 import pandas as pd
 import os
 from skimage import measure, filters, color, io, transform

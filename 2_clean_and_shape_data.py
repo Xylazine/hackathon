@@ -32,6 +32,7 @@ for col in num_cols:
                                 outlier_info[col]['z_scores']):
             print(f"  Index {idx}: value={val}, z-score={z}")
 
+
 # compile outlier row indices
 outlier_rows = []
 
