@@ -1,7 +1,8 @@
 import kagglehub
+import numpy as np
 import pandas as pd
 import os
-from skimage import measure, filters, color, io
+from skimage import measure, filters, color, io, transform
 
 
 cache_path = os.path.expanduser(
@@ -24,14 +25,15 @@ print(path)
 
 ind = 0
 rows = []
+img_sizes = []
 
 for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected")]:
     ind = 0
     for filename in os.listdir(image_path + folder):
-        if ind > 5:
+        if ind > 1000:
             break
-        print(filename)
         image = io.imread(image_path + folder + "/" + filename)
+        image = transform.resize(image, (150, 150), anti_aliasing=True)
         print("image imported")
         # Convert to grayscale
         gray = color.rgb2gray(image)
@@ -51,6 +53,7 @@ for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected
             'label': label
         })
         ind += 1
+
 
 df = pd.DataFrame(rows)
 print(df)
