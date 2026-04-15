@@ -25,12 +25,28 @@ svc_model = SVC()
 svc_model.fit(X_train, y_train)
 y_pred = svc_model.predict(X_test)
 
-base_accuracy = accuracy_score(y_test, y_pred)
-print(base_accuracy)
+svc_base_accuracy = accuracy_score(y_test, y_pred)
+print("SVC base accuracy:", round(svc_base_accuracy, 3))
 
+df_svc = pd.DataFrame({
+    "Predicted":  y_pred,
+    "Actual": y_test
+})
+
+df_svc.to_csv('svc_predictions.csv')
 
 
 # Random Forest
 rf_model = RandomForestClassifier(n_estimators=100, random_state=123)
 rf_model.fit(X_train, y_train)
-y_pred = rf_model
+y_pred = rf_model.predict(X_test)
+
+rf_base_accuracy = accuracy_score(y_test, y_pred)
+print("Random Forest base accuracy:", round(rf_base_accuracy, 3))
+
+df_rf = pd.DataFrame({
+    "Predicted":  y_pred,
+    "Actual": y_test
+})
+
+df_rf.to_csv('rf_predictions.csv')
