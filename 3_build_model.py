@@ -33,6 +33,8 @@ df_svc = pd.DataFrame({
     "Actual": y_test
 })
 
+# tune model
+
 df_svc.to_csv('svc_predictions.csv')
 
 
@@ -48,5 +50,8 @@ df_rf = pd.DataFrame({
     "Predicted":  y_pred,
     "Actual": y_test
 })
+
+# tune model
+
 
 df_rf.to_csv('rf_predictions.csv')
