@@ -1,19 +1,48 @@
 ---
 title: "Malaria Cell Classifier"
-author: "zahera khatoon"
+author: "Zahera Khatoon"
 date: "Spring 2026"
 output: html_document
 ---
 
 ```{r}
-df <- read.csv("features.csv")
+df <- read.csv("../clean_features.csv")
 ```
 
 # Summary of Data
+
 ```{r}
 str(df)
 ```
 
 ```{r}
 summary(df)
+```
+
+# Class Counts
+
+```{r}
+table(df$label)
+```
+
+# Feature Comparison
+
+# Area
+```{r}
+boxplot(area ~ label, data = df, main = "Area by Class", col = c("green", "purple"))
+```
+
+# Perimeter
+```{r}
+boxplot(perimeter ~ label, data = df, main = "Perimeter by Class", col = c("green", "purple"))
+```
+
+# Eccentricity
+```{r}
+boxplot(eccentricity ~ label, data = df, main = "Eccentricity by Class", col = c("green", "purple"))
+```
+
+# Mean Intensity
+```{r}
+boxplot(mean_intensity ~ label, data = df, main = "Mean Intensity by Class", col = c("green", "purple"))
 ```
