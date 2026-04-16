@@ -23,8 +23,6 @@ for col in num_cols:
 
     count = len(outlier_info[col]['indices'])
 
-    print(col)
-
     if count > 0:
         print(f"\n{count} outliers in {col}:")
         for idx, val, z in zip(outlier_info[col]['indices'],
@@ -37,9 +35,7 @@ for col in num_cols:
 outlier_rows = []
 
 for col in num_cols:
-    print(col)
     for key, values in outlier_info[col].items():
-        print(key, values)
         if key == "indices":
             outlier_rows.extend(values)
 
@@ -48,7 +44,7 @@ outlier_rows = list(set(outlier_rows))
 
 # delete outliers
 df = df.drop(outlier_rows)
-print(df.shape)
 
 # upload data to csv
 df.to_csv('clean_features.csv', index=False)
+print("Data cleaned and updated.")

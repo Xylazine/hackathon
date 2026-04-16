@@ -8,9 +8,10 @@ import numpy as np
 
 df = pd.read_csv("clean_features.csv")
 
+
+# partition data
 X = df.iloc[:,1:-1]   # predictor columns
 y = df.iloc[:, -1]   # target column
-
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
 SS = StandardScaler()
 SS.fit(X_train)   # fit scalar
@@ -19,7 +20,10 @@ X_test = pd.DataFrame(SS.transform(X_test), columns=X_test.columns)   # scale te
 kf = KFold(n_splits = 5, shuffle = True, random_state=123)   # cross-validation
 
 
-# SVM
+
+## SVM
+
+# base model
 svc_model = SVC()
 svc_model.fit(X_train, y_train)
 y_pred = svc_model.predict(X_test)
@@ -28,7 +32,6 @@ svc_base_accuracy = cross_val_score(svc_model,
                                    y_train, cv=kf,
                                    scoring='accuracy')
 svc_base_accuracy = np.mean(svc_base_accuracy)
-#svc_base_accuracy = accuracy_score(y_test, y_pred)
 print("SVC base accuracy:", round(svc_base_accuracy, 3))
 
 df_svc = pd.DataFrame({
@@ -50,16 +53,12 @@ for c in Cs:
   for g in gammas:
     for k in kernels:
       model = SVC(C=c, gamma=g, kernel=k)
-      # accuracies = cross_val_score(svc_model,
-      #                              pd.DataFrame(X_train.loc[:,"var_intensity"]),
-      #                              y_train, cv=kf, scoring='accuracy')
       accuracies = cross_val_score(model,
                                    X_train,
                                    y_train, cv=kf,
                                    scoring='accuracy')
       mean_accuracy = round(np.mean(accuracies), 3)
       #print("C:", c, "gamma:", g, "kernel:", k, "Accuracy:", mean_accuracy)
-      #print(model.coef_)
       if mean_accuracy >= best_acc:
         best_acc = mean_accuracy
         best_C = c
@@ -82,11 +81,12 @@ df_svc.to_csv('svc_predictions.csv')
 
 
 
-# Random Forest
+## Random Forest
+
+# base model
 rf_model = RandomForestClassifier(n_estimators=100, random_state=123)
 rf_model.fit(X_train, y_train)
 y_pred = rf_model.predict(X_test)
-
 rf_base_accuracy = np.mean(cross_val_score(rf_model, X_train, y_train, cv=kf, scoring='accuracy'))
 print("Random Forest base accuracy:", round(rf_base_accuracy, 3))
 
@@ -113,7 +113,7 @@ for e in estimators:
                           min_samples_split=s,
                           min_samples_leaf=l)
       accuracies = cross_val_score(model, X_train, y_train, cv=kf, scoring='accuracy')
-      print("estimators:", e, "splits:", s, "leaf:", l, "accuracy", round(np.mean(accuracies), 3))
+      #print("estimators:", e, "splits:", s, "leaf:", l, "accuracy", round(np.mean(accuracies), 3))
       mean_accuracies = round(np.mean(accuracies), 3)
       if mean_accuracies >= best_accuracy:
         best_f1 = mean_accuracies
@@ -121,6 +121,7 @@ for e in estimators:
         best_split = s
         best_leaf = l
 
+# evaluate model
 rf_model = RandomForestClassifier(n_estimators=best_est,
                                   min_samples_split=best_split,
                                   min_samples_leaf=best_leaf)
@@ -131,6 +132,7 @@ print("Random Forest score after tuning:", rf_score)
 print("best estimators:", best_est, "best splits:", best_split, "best leaf:", best_leaf)
 
 # upload prediction data
-
 df_rf["Predicted_tuned"] = rf_pred
 df_rf.to_csv('rf_predictions.csv')
+
+print("Models built, tuned, and evaluated.")

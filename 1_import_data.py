@@ -19,7 +19,6 @@ print(f"Dataset path: {path}")
 
 image_path = path + "/versions/1/cell_images/"
 
-ind = 0
 rows = []
 img_sizes = []
 
@@ -54,5 +53,4 @@ for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected
 df = pd.DataFrame(rows)
 df.describe()
 df.to_csv('features.csv', index=False)
-
-
+print("Data imported and features extracted.")

@@ -10,114 +10,172 @@ output:
     toc_float: true
     number_sections: true
 ---
+<br />
+<hr />
 
-
-```{r, echo=F, message=F}
+```{r, echo=F, message=F, warning=F}
 library(ggplot2)
 library(dplyr)
+library(knitr)
+library(kableExtra)
 ```
 
 ```{r, echo=F}
 df <- read.csv("clean_features.csv")
+df <- df[-1]
 df_rf <- read.csv("rf_predictions.csv")
 df_svc <- read.csv("svc_predictions.csv")
 ```
 
-```{r, echo=F}
-df_rf <- read.csv("rf_predictions.csv")
-df_rf <- df_rf %>% 
-  mutate(across(c("Predicted_preTune", "Actual", "Prediction_tuned"), as.factor))
-
-df_svc <- read.csv("svc_predictions.csv")
-df_rf <- df_svc %>% 
-  mutate(across(c("Predicted_preTune", "Actual", "Prediction_tuned"), as.factor))
-```
 
 ## Introduction
-What is the purpose of this project? Where is the data sourced from?
+The purpose of this project is to build a machine learning classifier to automatically detect malaria-infected cells from microscopic blood smear images. Early and accurate diagnosis of malaria is very important for treatment and saving lives. The data is sourced from the NIH Malaria Cell Images Dataset on Kaggle, containing 27,000 cell images labeled as parasitized or uninfected.
 
+<br />
 
+<center>
+![A healthy blood cell vs one infected with malaria.](cell_comp.png){width="450"}
+</center>
 ## Summary of Data
-The predictive features used to build this model are...
+The predictive features used to build this model are area, perimeter, eccentricity, and mean intensity, extracted from `r nrow(df)` cell images. The class balance of our data was a 50/50 split of parasitized to uninfected cells.
+
 ```{r, echo=F}
-head(df)
+skimr::skim(df)
 ```
 
 
 ## Exploratory Visualization
-
-```{r, echo=F}
+<br />
+```{r, echo=F, fig.width=6, fig.height=4, fig.align='center'}
 ggplot(df, aes(x=perimeter, y="", fill=label)) + 
   geom_boxplot() +
   theme_minimal() +
-  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
-  labs(title="Difference in Cell Perimeter by Disease State", fill="Label", x="Perimeter", y="") +
+  scale_fill_manual(values=c('parasitized'="#AA5C5C", 'uninfected'="#7FAA7F")) +
+  labs(title="Cell Perimeter by Disease State", fill="Label", x="Perimeter", y="") +
   theme(
     plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
   )
 ```
 
-```{r, echo=F}
+
+* Parasitized cells exhibit a greater perimeter than uninfected cells, indicating that malaria infection leads to more irregular and elongated cell boundaries.
+
+
+
+```{r, echo=F, fig.width=6, fig.height=4, fig.align='center'}
 ggplot(df, aes(x=area, y="", fill=label)) + 
   geom_boxplot() +
   theme_minimal() +
-  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
-  labs(title="Difference in Cell Area by Disease State", fill="Label", x="Area", y="") +
+  scale_fill_manual(values=c('parasitized'="#AA5C5C", 'uninfected'="#7FAA7F")) +
+  labs(title="Cell Area by Disease State", fill="Label", x="Area", y="") +
   theme(
     plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
   )
 ```
 
-```{r, echo=F}
+
+* Parasitized cells demonstrate a larger cell area compared to uninfected cells, suggesting that infection causes cellular swelling or expansion.
+
+
+
+```{r, echo=F, fig.width=6, fig.height=4, fig.align='center'}
 ggplot(df, aes(x=eccentricity, y="", fill=label)) + 
   geom_boxplot() +
   theme_minimal() +
-  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
-  labs(title="Difference in Cell Eccentricity by Disease State", fill="Label", x="Eccentricity", y="") +
+  scale_fill_manual(values=c('parasitized'="#AA5C5C", 'uninfected'="#7FAA7F")) +
+  labs(title="Cell Eccentricity by Disease State", fill="Label", x="Eccentricity", y="") +
   theme(
     plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
   )
 ```
 
-```{r, echo=F}
+
+* Both parasitized and uninfected cells display similar eccentricity values, indicating that cell shape alone is not a reliable predictor of infection status.
+
+
+
+```{r, echo=F, fig.width=6, fig.height=4, fig.align='center'}
 ggplot(df, aes(x=mean_intensity, y="", fill=label)) + 
   geom_boxplot() +
   theme_minimal() +
-  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
-  labs(title="Difference in Mean Image Intensity by Disease State", fill="Label", x="Mean Intensity", y="") +
+  scale_fill_manual(values=c('parasitized'="#AA5C5C", 'uninfected'="#7FAA7F")) +
+  labs(title="Average Image Intensity by Disease State", fill="Label", x="Mean Intensity", y="") +
   theme(
     plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
   )
 ```
 
-```{r, echo=F}
-ggplot(df, aes(x=var_intensity, y="", fill=label)) + 
-  geom_boxplot() +
-  theme_minimal() +
-  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
-  labs(title="Difference in Image Intensity Variance by Disease State", fill="Label", x="Intensity Variance", y="") +
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
-  )
-```
+
+* Parasitized cells show a wider range of mean intensity values compared to uninfected cells, suggesting that malaria infection introduces greater variability in cellular brightness.
+
+
 
 
 ## Data Shaping
+Prior to feature extraction, all images underwent several preprocessing steps using various libraries in the scikit-learn universe: they were resized to a uniform dimension, converted to greyscale, and separated from the background. Resizing was a necessary step given that several of the extracted features rely on size-based measurements, meaning inconsistent dimensions would produce unreliable values. While RGB color intensity was initially considered as a predictor, it was ultimately excluded due to the high degree of color variation across the 27,000 images in the dataset, making it an insufficiently stable feature for classification. Following feature extraction, extreme outliers were removed to preserve the integrity of the distance-based SVM algorithm, which is sensitive to observations far outside the normal data range. The data was then scaled using a scaler fitted exclusively on the training data, ensuring that information from the test set did not leak into the preprocessing pipeline. 
 
-- before feature extraction, images were resized, converted to greyscale, and separated from background
-- extraction of rgb color intensity was considered in the model but the colors varied too widely among the 27,000 images in the dataset to be a reliable predictor
-- after feature extraction, extreme outliers were removed, data was scaled with the scalar fit to the training data to prevent leakage
-- while the data set consisted of masked images, building an additional segmentation mask would have been a promising direction for this project given the notable appearance of intense areas in the cell present in only parasitized images
+## Model Evaluation
+Models were trained using an 80:20 train/test split. Models were optimized for prediction accuracy, as allowed by the 1:1 ratio of classifiers. Hyperparameter tuning was carried out using cross-validation. Hyperparameters were optimized using a grid search method with the base model as the standard. 
 
-## Model Parameters
+```{r, echo=F}
+model_data <- data.frame(
+  Model    = c("Random Forest", "SVC"),
+  Accuracy = c(0.865, 0.870)
+)
 
+model_data %>%
+  kable(align = "c", caption = "Model Accuracy Comparison") %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "bordered"),
+    full_width        = FALSE,
+    position          = "center"
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#444441") %>%
+  row_spec(which.max(model_data$Accuracy),
+           bold       = TRUE,
+           color      = "white",
+           background = "#ADCDAD") %>%
+  column_spec(2, bold = TRUE)
+```
 
 ### Random Forest
+```{r, echo=F, fig.width=6, fig.height=4, fig.align='center'}
+# actual vs predicted as a table
+results_table <- table(Actual = df_rf$Actual, Predicted = df_rf$Predicted_tuned)
 
-### SVM
+# mosaic plot
+mosaicplot(results_table,
+           color = c("#AA5C5C", "#7FAA7F"),
+           main  = "RF: Actual vs Predicted",
+           xlab  = "Actual",
+           ylab  = "Predicted")
+```
+
+### Support Vector Classifier
+```{r, echo=F, fig.width=6, fig.height=4, fig.align='center'}
+# actual vs predicted as a table
+results_table <- table(Actual = df_svc$Actual, Predicted = df_svc$Predicted_tuned)
+
+# mosaic plot
+mosaicplot(results_table,
+           color = c("#AA5C5C", "#7FAA7F"),
+           main  = "SVC: Actual vs Predicted",
+           xlab  = "Actual",
+           ylab  = "Predicted")
+```
 
 ## Conclusion
 
+Hyperparameter tuning did not result in significant gain of performance across either model, indicating that the models were not learning any new information from the data throughout the training process. This makes sense given the low complexity of the data.
+
+Although the dataset consisted of masked images, these masks only achieve individual cell separation and more in-depth masking techniques may improve model performance. Constructing an additional segmentation mask represents a promising avenue for future work, particularly given the visually distinctive regions of high pixel intensity that appear to be present only in parasitized cells. 
+
+<br  />
+<center>
+![A demonstration of the high intensity region typically seen in malaria cells.](mask.png){width="500"}
+</center>
+<br />
+<hr />
 ## References
 
 
