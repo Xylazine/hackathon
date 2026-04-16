@@ -1,0 +1,13 @@
+##fileformat=VCFv4.2
+##fileDate=20260416
+##reference=GRCh38/hg38
+##contig=<ID=chr17,length=83257441>
+##INFO=<ID=RS,Number=1,Type=String,Description="dbSNP rsID">
+##INFO=<ID=GENE,Number=1,Type=String,Description="Gene name">
+##INFO=<ID=TRANSCRIPT,Number=1,Type=String,Description="RefSeq transcript">
+##INFO=<ID=HGVS_C,Number=1,Type=String,Description="HGVS coding sequence notation">
+##INFO=<ID=HGVS_P,Number=1,Type=String,Description="HGVS protein notation">
+##INFO=<ID=CLNSIG,Number=1,Type=String,Description="ClinVar clinical significance">
+##INFO=<ID=CLNID,Number=1,Type=String,Description="ClinVar VariationID">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chr17	43092919	rs799917	G	A	.	PASS	RS=rs799917;GENE=BRCA1;TRANSCRIPT=NM_007294.4;HGVS_C=c.2612C>T;HGVS_P=p.Pro871Leu;CLNSIG=Benign;CLNID=41812
