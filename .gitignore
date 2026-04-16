@@ -6,6 +6,7 @@ features.csv
 clean_features.csv
 rf_predictions.csv
 svc_predictions.csv
+cell_segmentation_classifier.Rproj
 data/
 features.csv
 clean_features.csv

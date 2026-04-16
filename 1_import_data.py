@@ -3,7 +3,6 @@ import pandas as pd
 import os
 from skimage import measure, filters, color, io, transform
 
-
 cache_path = os.path.expanduser(
     "~/.cache/kagglehub/datasets/iarunava/cell-images-for-detecting-malaria"
 )
@@ -25,7 +24,7 @@ img_sizes = []
 for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected")]:
     ind = 0
     for filename in os.listdir(image_path + folder):
-        if ind > 1000:
+        if ind > 100:
             break
         image = io.imread(image_path + folder + "/" + filename)
         image = transform.resize(image, (150, 150), anti_aliasing=True)
@@ -53,4 +52,3 @@ for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected
 df = pd.DataFrame(rows)
 df.describe()
 df.to_csv('features.csv', index=False)
-print("Data imported and features extracted.")

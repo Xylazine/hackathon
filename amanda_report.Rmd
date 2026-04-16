@@ -29,7 +29,7 @@ df_svc <- read.csv("svc_predictions.csv")
 
 
 ## Introduction
-The purpose of this project is to build a machine learning classifier to automatically detect malaria-infected cells from microscopic blood smear images. Early and accurate diagnosis of malaria is very important for treatment and saving lives. The data is sourced from the NIH Malaria Cell Images Dataset on Kaggle, containing 27,000 cell images labeled as parasitized or uninfected.
+The purpose of this project is to build a machine learning classifier to automatically detect malaria-infected cells from microscopic blood smear images. Early and accurate diagnosis of malaria is very important for treatment and saving lives. The data is sourced from the NIH Malaria Cell Images Dataset on Kaggle, containing ~27,000 cell images labeled as parasitized or uninfected.
 
 <br />
 
@@ -37,7 +37,7 @@ The purpose of this project is to build a machine learning classifier to automat
 ![A healthy blood cell vs one infected with malaria.](cell_comp.png){width="450"}
 </center>
 ## Summary of Data
-The predictive features used to build this model are area, perimeter, eccentricity, and mean intensity, extracted from `r nrow(df)` cell images. The class balance of our data was a 50/50 split of parasitized to uninfected cells.
+The predictive features used to build this model are area, perimeter, eccentricity, and mean intensity, extracted from ~27,000 cell images. The class balance of our data was a 50/50 split of parasitized to uninfected cells.
 
 ```{r, echo=F}
 skimr::skim(df)
@@ -120,7 +120,8 @@ Models were trained using an 80:20 train/test split. Models were optimized for p
 ```{r, echo=F}
 model_data <- data.frame(
   Model    = c("Random Forest", "SVC"),
-  Accuracy = c(0.865, 0.870)
+  "Accuracy_PreTune" = c(0.821, 0.834),
+  "Accuracy_Tuned" = c(0.824, 0.830)
 )
 
 model_data %>%
@@ -131,11 +132,11 @@ model_data %>%
     position          = "center"
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#444441") %>%
-  row_spec(which.max(model_data$Accuracy),
+  row_spec(which.max(model_data$Accuracy_Tuned),
            bold       = TRUE,
            color      = "white",
            background = "#ADCDAD") %>%
-  column_spec(2, bold = TRUE)
+  column_spec(3, bold = TRUE)
 ```
 
 ### Random Forest
@@ -178,4 +179,11 @@ Although the dataset consisted of masked images, these masks only achieve indivi
 <hr />
 ## References
 
+- NIH Malaria Cell Images Dataset. Available on Kaggle: https://www.kaggle.com/datasets/iarunava/cell-images-for-detecting-malaria
+
+- Pedregosa, F. et al. (2011). Scikit-learn: Machine learning in Python. Journal of Machine Learning Research, 12, 2825-2830.
+
+- Rajaraman, S. et al. (2018). Pre-trained convolutional neural networks as feature extractors toward improved malaria parasite detection. PeerJ, 6, e4568. https://doi.org/10.7717/peerj.4568
+
+- Van der Walt, S. et al. (2014). scikit-image: image processing in Python. PeerJ, 2, e453. https://doi.org/10.7717/peerj.453
 

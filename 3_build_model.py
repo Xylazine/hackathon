@@ -6,8 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 import numpy as np
 
-df = pd.read_csv("clean_features.csv")
 
+df = pd.read_csv("clean_features.csv")
 
 # partition data
 X = df.iloc[:,1:-1]   # predictor columns
@@ -40,7 +40,7 @@ df_svc = pd.DataFrame({
 })
 
 # tune model
-Cs = [0.1, 1, 10]
+Cs = [1, 10, 20]
 gammas = ['scale', 'auto',0.01, 0.1, 1]
 kernels = ['rbf', 'linear']
 
@@ -66,13 +66,11 @@ for c in Cs:
         best_kernel = k
 
 # evaluate model
-svc_mean_accuracy = round(best_acc, 3)
 svc_model = SVC(C=best_C, gamma=best_gamma, kernel=best_kernel)
 svc_model.fit(X_train, y_train)
 svc_pred = svc_model.predict(X_test)
 svc_score = round(accuracy_score(y_test, svc_pred), 3)
-print("SVC accuracy after tuning:", svc_mean_accuracy)
-print("SVC score:", svc_score)
+print("SVC accuracy after tuning:", svc_score)
 print('Best C:', best_C, "best gamma:", best_gamma, "best kernel:", best_kernel)
 
 df_svc["Predicted_tuned"] = svc_pred
@@ -134,5 +132,3 @@ print("best estimators:", best_est, "best splits:", best_split, "best leaf:", be
 # upload prediction data
 df_rf["Predicted_tuned"] = rf_pred
 df_rf.to_csv('rf_predictions.csv')
-
-print("Models built, tuned, and evaluated.")

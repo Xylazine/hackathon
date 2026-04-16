@@ -13,7 +13,7 @@ outlier_info = {}
 for col in num_cols:
 
     z_col = stats.zscore(df[col])
-    mask = np.abs(z_col) > 7
+    mask = np.abs(z_col) > 3
 
     outlier_info[col] = {
         'indices': df[mask].index.tolist(),
@@ -47,4 +47,3 @@ df = df.drop(outlier_rows)
 
 # upload data to csv
 df.to_csv('clean_features.csv', index=False)
-print("Data cleaned and updated.")
