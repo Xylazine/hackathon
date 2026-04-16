@@ -18,9 +18,6 @@ else:
 print(f"Dataset path: {path}")
 
 image_path = path + "/versions/1/cell_images/"
-print(os.path.exists(image_path + "Parasitized"))
-print(path)
-
 
 ind = 0
 rows = []
@@ -55,7 +52,6 @@ for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected
 
 
 df = pd.DataFrame(rows)
-print(df)
 df.describe()
 df.to_csv('features.csv', index=False)
 
