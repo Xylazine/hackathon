@@ -4,6 +4,8 @@
 .Ruserdata
 features.csv
 clean_features.csv
+rf_predictions.csv
+svc_predictions.csv
 data/
 features.csv
 clean_features.csv

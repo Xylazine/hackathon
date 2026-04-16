@@ -48,6 +48,7 @@ for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected
             'perimeter': props.perimeter,
             'eccentricity': props.eccentricity,
             'mean_intensity': gray.mean(),
+            'var_intensity': gray.var(),
             'label': label
         })
         ind += 1
