@@ -1,19 +1,46 @@
 ---
 title: "Malaria Cell Classifier"
-author: "Gale, Amanda"
+subtitle: "Biohack Spring 2026"
+author: "Amanda Gale, Aamna Sheikh, Zahera Khatoon"
 date: "Spring 2026"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
 ---
 
 
-```{r, echo=F}
-df <- read.csv("clean_features.csv")
+```{r, echo=F, message=F}
+library(ggplot2)
+library(dplyr)
 ```
 
-# Summary of Data
+```{r, echo=F}
+df <- read.csv("clean_features.csv")
+df_rf <- read.csv("rf_predictions.csv")
+df_svc <- read.csv("svc_predictions.csv")
+```
 
 ```{r, echo=F}
-summary(df)
+df_rf <- read.csv("rf_predictions.csv")
+df_rf <- df_rf %>% 
+  mutate(across(c("Predicted_preTune", "Actual", "Prediction_tuned"), as.factor))
+
+df_svc <- read.csv("svc_predictions.csv")
+df_rf <- df_svc %>% 
+  mutate(across(c("Predicted_preTune", "Actual", "Prediction_tuned"), as.factor))
+```
+
+## Introduction
+What is the purpose of this project? Where is the data sourced from?
+
+
+## Summary of Data
+The predictive features used to build this model are...
+```{r, echo=F}
+head(df)
 ```
 
 
@@ -57,25 +84,40 @@ ggplot(df, aes(x=mean_intensity, y="", fill=label)) +
   geom_boxplot() +
   theme_minimal() +
   scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
-  labs(title="Difference in Cell Intensity by Disease State", fill="Label", x="Mean Intensity", y="") +
+  labs(title="Difference in Mean Image Intensity by Disease State", fill="Label", x="Mean Intensity", y="") +
   theme(
     plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
   )
 ```
 
+```{r, echo=F}
+ggplot(df, aes(x=var_intensity, y="", fill=label)) + 
+  geom_boxplot() +
+  theme_minimal() +
+  scale_fill_manual(values=c('parasitized'="#AA0000", 'uninfected'="#00AA00")) +
+  labs(title="Difference in Image Intensity Variance by Disease State", fill="Label", x="Intensity Variance", y="") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+  )
+```
+
+
 ## Data Shaping
 
 - before feature extraction, images were resized, converted to greyscale, and separated from background
+- extraction of rgb color intensity was considered in the model but the colors varied too widely among the 27,000 images in the dataset to be a reliable predictor
 - after feature extraction, extreme outliers were removed, data was scaled with the scalar fit to the training data to prevent leakage
-
+- while the data set consisted of masked images, building an additional segmentation mask would have been a promising direction for this project given the notable appearance of intense areas in the cell present in only parasitized images
 
 ## Model Parameters
+
 
 ### Random Forest
 
 ### SVM
 
+## Conclusion
 
-
+## References
 
 
