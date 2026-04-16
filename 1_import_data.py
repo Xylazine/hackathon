@@ -54,7 +54,7 @@ for label, folder in [('parasitized', "Parasitized"), ('uninfected', "Uninfected
         ind += 1
 
 
-df = pd.DataFrame(rows)gr
+df = pd.DataFrame(rows)
 print(df)
 df.describe()
 df.to_csv('features.csv', index=False)

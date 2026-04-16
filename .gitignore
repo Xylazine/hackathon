@@ -2,8 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
-features.csv
-clean_features.csv
+cell_segmentation_classifier/features.csv
+cell_segmentation_classifier/clean_features.csv
 data/
-features.csv
-clean_features.csv
+cell_segmentation_classifier/features.csv
+cell_segmentation_classifier/clean_features.csv

@@ -25,7 +25,7 @@ table(df$label)
 
 # Basic Stats - by class
 ```{r}
-df <- read.csv("clean_features.csv")
+aggregate(cbind(area, perimeter, eccentricity, mean_intensity) ~ label, data = df, mean)
 ```
 
 # Feature Comparision
@@ -54,3 +54,35 @@ boxplot(mean_intensity ~ label, data = df, main = "Mean Intensity by Class", col
 numeric_df <- df[, c("area", "perimeter", "eccentricity", "mean_intensity")]
 cor(numeric_df)
 ```
+
+###########
+# Model Evaluation
+```{r}
+svc <- read.csv("svc_predictions.csv")
+rf <- read.csv("rf_predictions.csv")
+```
+
+## Confusion Matrix
+
+```{r}
+table(svc$Predicted, svc$Actual)
+```{r}
+table(rf$Predicted, rf$Actual)
+```
+
+## Accuracy (simple)
+
+```{r}
+mean(svc$Predicted == svc$Actual)
+
+```{r}
+mean(rf$Predicted == rf$Actual)
+```
+
+## Compare models
+```{r}
+mean(svc$Predicted == svc$Actual)
+mean(rf$Predicted == rf$Actual)
+```
+
+## The average feature values differ slightly between parasitized and uninfected cells, indicating that these features may help distinguish between the two classes.

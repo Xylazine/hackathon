@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
-df = pd.read_csv("clean_features.csv")
+df = pd.read_csv("cell_segmentation_classifier/clean_features.csv")
 
 X = df.iloc[:,1:-1]   # predictor columns
 y = df.iloc[:, -1]   # target column
